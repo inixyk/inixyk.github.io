@@ -34,7 +34,7 @@ function simpanData(id, nama, stok, harga, deskripsi) {
             tx.abort();
             console.log('error menambahkan ' + e);
         })
-    }else{
+    } else {
         dbprom.then((db) => {
             tx = db.transaction('produk', 'readwrite'); //buka transaksi
             let dbstore = tx.objectStore('produk');     //pilih store ==>table
@@ -51,14 +51,14 @@ function simpanData(id, nama, stok, harga, deskripsi) {
             tx.abort();
             console.log('error mengubah ' + e);
         })
-    } 
+    }
 }
 
 //menghapus data
-function hapusData(id){
+function hapusData(id) {
     var jawab = confirm('yakin akan menghapus ?');
-    if(jawab){
-         dbprom.then((db) => {
+    if (jawab) {
+        dbprom.then((db) => {
             tx = db.transaction('produk', 'readwrite'); //buka transaksi
             let dbstore = tx.objectStore('produk');     //pilih store ==>table
             return dbstore.delete(parseInt(id));        //hapus id terpilih
@@ -73,7 +73,7 @@ function hapusData(id){
 }
 
 //membuat aksi ketika tombol hapus diklik
-document.querySelector('#bMHapus').addEventListener('click',()=>{
+document.querySelector('#bMHapus').addEventListener('click', () => {
     id = document.querySelector('#eId').value;
     hapusData(id);
 })
@@ -137,3 +137,21 @@ function ambilId(id) {
         console.log('error ' + err);
     })
 }
+
+if ('Notification' in window) {
+    console.log('notif didukung');
+} else {
+    alert('notifikasi tidak didukung');
+}
+//minta ijin
+Notification.requestPermission((status) => {
+    console.log('status ijin', status);
+})
+//membuat notifikasi
+document.querySelector('#notifikasi').addEventListener('click',()=>{
+    if(Notification.permission == 'granted'){
+        navigator.serviceWorker.getRegistration().then((reg)=>{
+            reg.showNotification('pesan baru');
+        });
+    }
+})
